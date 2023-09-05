@@ -12,35 +12,25 @@ minikube version: v1.31.2
 ## インストール
 
 ``` sh
-cd [WORK-DIR]
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
+$ cd [WORK-DIR]
+$ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+$ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
 
 ## 稼働確認
 
 ### バージョン確認
 
-IN
 ``` shell
-minikube version
-```
-
-OUT
-``` shell
+$ minikube version
 minikube version: v1.31.2
 commit: fd7ecd9c4599bef9f04c0986c4a0187f98a4396e
 ```
 
 ### クラスターの開始
 
-IN
 ``` shell
-minikube start
-```
-
-OUT（失敗）
-``` shell
+$ minikube start
 😄  minikube v1.31.2 on Ubuntu 20.04 (amd64)
 👎  Unable to pick a default driver. Here is what was considered, in preference order:
     ▪ docker: Not healthy: "docker version --format {{.Server.Os}}-{{.Server.Version}}:{{.Server.Platform.Name}}" exit status 1: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
@@ -53,17 +43,12 @@ OUT（失敗）
 
 ❌  Exiting due to DRV_DOCKER_NOT_RUNNING: Found docker, but the docker service isn't running. Try restarting the docker service.
 ```
+失敗した。
+dockerが起動していなかったので、起動して再度クラスター開始。
 
-dockerが起動していなかったので起動して再度クラスター開始
-
-IN 
 ```shell
-sudo service docker start
-minikube start
-```
-
-OUT
-```shell
+$ sudo service docker start
+$ minikube start
 😄  minikube v1.31.2 on Ubuntu 20.04 (amd64)
 ✨  Automatically selected the docker driver. Other choices: ssh, none
 📌  Using Docker driver with root privileges
@@ -87,15 +72,8 @@ OUT
 
 kubectlが必要なら`minikube kubectl -- get pods -A`を実行してと書かれているので実行
 
-IN
-
 ```shell
-minikube kubectl -- get po -A
-```
-
-OUT
-
-```shell
+$ minikube kubectl -- get po -A
     > kubectl.sha256:  64 B / 64 B [-------------------------] 100.00% ? p/s 0s
     > kubectl:  46.98 MiB / 46.98 MiB [--------------] 100.00% 1.00 MiB p/s 47s
 NAMESPACE     NAME                               READY   STATUS    RESTARTS      AGE
@@ -112,20 +90,24 @@ kube-system   storage-provisioner                1/1     Running   1 (37m ago)  
 
 ### ダッシュボードの起動
 
-IN
 ```shell
 minikube dashboard --url
-```
-
-初回はdashbord用のpodが立ち上がるまで10分くらいかかった。
-
-OUT
-```shell
 🤔  Verifying dashboard health ...
 🚀  Launching proxy ...
 🤔  Verifying proxy health ...
 http://127.0.0.1:43057/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
 ```
+初回はdashbord用のpodが立ち上がるまで10分くらいかかった。
 
+
+こんな感じでダッシュボードが立ち上がる。
 ![](./images/dashbord.png)
 
+### クラスターの停止
+
+```shell
+$ minikube stop
+✋  Stopping node "minikube"  ...
+🛑  Powering off "minikube" via SSH ...
+🛑  1 node stopped.
+```
