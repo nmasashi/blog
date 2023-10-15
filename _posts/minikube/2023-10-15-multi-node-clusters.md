@@ -142,8 +142,7 @@ k8s-environment-variable-deployment-577848df7d-vvlz6    multinode-demo-m02
 LoadBalancer を作成する。
 
 ```shell
-$ kubectl expose deployment k8s-environment-variable-deployment --type
-=LoadBalancer --port=8080
+$ kubectl expose deployment k8s-environment-variable-deployment --type=LoadBalancer --port=8080
 service/k8s-environment-variable-deployment exposed
 ```
 
