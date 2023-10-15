@@ -169,26 +169,32 @@ for i in {1..1000} ; do curl localhost:8080 ; done > output.txt
 
 集計
 
-<table border=1>
+<table border=1 >
+  <tr>
+    <th>node 名</th>
+    <th>アクセス回数</th>
+    <th>pod 名（サフィックス）</th>
+    <th>アクセス回数</th>
+  </tr>
   <tr>
     <td rowspan="2">multinode-demo</td>
-    <td rowspan="2">498</td>
+    <td rowspan="2" align="center">498</td>
     <td>s75fj</td>
-    <td>262</td>
+    <td align="center">262</td>
   </tr>
   <tr>
     <td>pkc4d</td>
-    <td>236</td>
+    <td align="center">236</td>
   </tr>
   <tr>
     <td rowspan="2">multinode-demo-m02</td>
-    <td rowspan="2">502</td>
+    <td rowspan="2" align="center">502</td>
     <td>7nptw</td>
-    <td>274</td>
+    <td align="center">274</td>
   </tr>
   <tr>
     <td>vvlz6</td>
-    <td>228</td>
+    <td align="center">228</td>
   </tr>
 </table>
 
