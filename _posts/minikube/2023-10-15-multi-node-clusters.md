@@ -164,7 +164,7 @@ $ curl localhost:8080
 1000 回アクセスしてみる。
 
 ```shell
-for i in {1..1000} ; do curl localhost:8080 ; done > output.txt
+$ for i in {1..1000} ; do curl localhost:8080 ; done > output.txt
 ```
 
 集計
