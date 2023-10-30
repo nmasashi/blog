@@ -10,7 +10,7 @@ categories: Kubernetes minikube
 
 # Multi-Node Clusters
 
-minikube をマルチノードにしてみていろいろしてみる。
+minikube をマルチノードにしてみていろいろしてみる
 
 ## やりたいこと
 

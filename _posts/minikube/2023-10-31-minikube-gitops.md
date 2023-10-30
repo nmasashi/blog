@@ -5,6 +5,9 @@ date: 2023-10-31
 categories: Kubernetes minikube
 ---
 
+- TOC
+{:toc}
+
 # minikubeでGitOps
 
 ## 準備
