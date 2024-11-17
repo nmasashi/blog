@@ -122,6 +122,7 @@ print(neigh.predict_proba([[0.9]]))
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/k_1.png)
 
 答え合わせ。正解！！
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/k_2.png)
 
 時間計測
