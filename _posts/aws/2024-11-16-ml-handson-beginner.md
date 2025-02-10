@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "機械学習で画像を分類してみよう(AWS ハンスオン)"
+title: "機械学習で画像を分類してみよう(AWS ハンズオン)"
 date: 2024-11-16
 categories: aws ai
 ---
