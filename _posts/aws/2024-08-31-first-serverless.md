@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "はじめてのサーバーレス"
-date: 2023-09-21
+date: 2024-08-31
 categories: aws lambda
 ---
 

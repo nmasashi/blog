@@ -6,7 +6,7 @@ categories: aws directconnect
 ---
 
 - TOC
-  {:toc}
+{:toc}
 
 # Direct Connect について調べた
 

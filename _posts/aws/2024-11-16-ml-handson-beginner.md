@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "機械学習で画像を分類してみよう"
+title: "機械学習で画像を分類してみよう(AWS ハンスオン)"
 date: 2024-11-16
 categories: aws ai
 ---
 
 - TOC
-  {:toc}
+{:toc}
 
 # 機械学習で画像を分類してみよう
 
