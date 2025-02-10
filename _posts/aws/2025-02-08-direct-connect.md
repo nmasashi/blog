@@ -16,7 +16,7 @@ categories: aws directconnect
 
 - オンプレミス環境と AWS を専用ネットワーク回線で接続したい場合に使用
 - ただ、正確にはオンプレと AWS を専用線でつなぐサービスを提供しているわけではない
-- 正確には Direct Connect ロケーション（AWS が提供するデータセンター）と AWS を接続する
+- 正確には Direct Connect ロケーション（AWS が提供するデータセンター）にあるルーターと AWS を接続する
 - 異なるリージョンや、異なるアカウントに対しての接続にはDX-GWを組み合わせる必要がある
 
 ![]({{site.baseurl}}/images/aws/direct-connect/dx-vifs.png)
@@ -37,7 +37,26 @@ categories: aws directconnect
   - Private Virtual Interface： AWS のパブリックサービス（S3, DynamoDB 等）に接続
   - Transit Virtual Interface: DX-GW を経由して複数の VPC と接続
 
+### 占有型接続 vs 共有型（ホスト型）接続
+![]({{site.baseurl}}/images/aws/direct-connect/standerd_hosted.png)
+
+- 接続の範囲はCosutomer RouterからAWSネットワークに入るまで
+- 占有型の方は標準VIFを使用し、共有型はホスト型VIF（別アカウントのVPCに接続可能）を使用して接続
+
 ## Direct Connect Gateway とは
 
 - 単一のDirect Connect接続を複数のVPCに共有できる
-- 複数のAWSリージョンやVPCに
+- 複数のAWSリージョンやVPCに接続可能
+- マルチアカウントにも対応
+- Direct Connect経由でVPC間の通信やオンプレ間の通信は不可能（オンプレとVPC間が可能）
+- VPC間必要な場合はTransit Gatewayが必要
+
+
+## Direct Connect Gateway vs Transit Gateway
+
+||Direct connect Gateway|Transit Gateway|
+|---|---|---|
+|通信対象|オンプレとVPC間|オンプレとVPC間、VPC間、(オンプレ間 ※VPCを中継すれば可能)|
+|用途|オンプレとVPCを1対多で接続|VPC間の相互接続、DXGW経由でのオンプレ接続|
+
+
