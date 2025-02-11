@@ -28,7 +28,7 @@ categories: aws directconnect
   - AWS と物理的に接続されている
 - Customer Router
   - 物理的なルーター
-  - オンプレと接続
+  - オンプレからの線をここに接続
 - VLAN
   - ひとつの Direct Connect 接続に対して複数の VLAN の作成が可能
   - VLAN ごとに VIF を割り当てる
