@@ -60,3 +60,6 @@ categories: aws directconnect
 |用途|オンプレとVPCを1対多で接続|VPC間の相互接続、DXGW経由でのオンプレ接続|
 
 
+## 参考資料
+
+https://pages.awscloud.com/rs/112-TZM-766/images/20210209-AWS-Blackbelt-DirectConnect.pdf
