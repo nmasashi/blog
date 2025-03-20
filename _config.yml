@@ -26,9 +26,11 @@ github_username:  jekyll
 
 # Build settings
 markdown: kramdown
+# remote_theme: pages-themes/cayman@v0.2.0
 theme: minima
 plugins:
   - jekyll-feed
+  # - jekyll-remote-theme
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -41,3 +43,14 @@ plugins:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+
+sass:
+  style: compressed # CSS の圧縮設定
+  load_paths:
+    - _sass
+
+toc:
+  min_level: 2
+  max_level: 3
+  list_class: toc-list

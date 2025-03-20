@@ -1,0 +1,85 @@
+$content-width: 1000px;
+
+/* フォントや背景色の変更 */
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+  }
+  
+  /* ヘッダーのデザイン */
+  .site-header {
+    background-color: #222;
+    color: white;
+    padding: 15px;
+  }
+  
+  /* 表（テーブル）のデザイン */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  th {
+    background-color: #f0f0f0;
+  }
+  
+  #toc-container {
+    top: 100px;
+    right: 20px;
+    width: 250px;
+    // background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+/**
+ * Wrapper
+ */
+ .wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    max-width: 80% !important;
+    max-width: 80%  !important;
+  }
+  
+
+article.post {
+    // flex:1;
+    // height: auto;     /* 任意の高さ */
+    width: 70%;
+    margin: auto;
+}
+
+#toc-container {
+    position: sticky;
+    width: 15%;
+    top: 0;           /* 上端に固定 */    
+    height: 80vh;
+    // height: auto;     /* 任意の高さ */
+}
+
+@media (max-width: 600px) {
+    .wrapper {
+        display: initial;
+    }
+    #toc-container {
+        position: initial;
+        width: initial;
+    }
+    #toc-container {
+        position: initial;
+        width: initial;
+        top: initial;
+        height: initial;
+    }
+    
+  }

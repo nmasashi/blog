@@ -1,0 +1,22 @@
+{% if page.layout == "post" %}
+<div id="toc-container">
+    <ul id="toc-list"></ul>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var tocList = document.getElementById("toc-list");
+        var headers = document.querySelectorAll("h2, h3, h4"); // h2, h3, h4をターゲットに
+
+        headers.forEach(function (header) {
+            var link = document.createElement("a");
+            link.href = "#" + header.id; // 見出しのidをリンクに設定
+            link.textContent = header.textContent; // 見出しのテキストをリンクに設定
+
+            var listItem = document.createElement("li");
+            listItem.appendChild(link);
+            tocList.appendChild(listItem);
+        });
+    });
+</script>
+{% endif %}

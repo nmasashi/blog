@@ -5,9 +5,6 @@ date: 2025-02-10
 categories: aws directconnect
 ---
 
-- TOC
-{:toc}
-
 # Direct Connect について調べた
 
 いろいろとわからないことが多かったので調べた

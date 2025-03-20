@@ -23,15 +23,19 @@ OCR をするハンズオンみたい
 Amazon SageMaker: 機械学習の環境を簡単にセットアップできる
 
 この辺りを効率よく処理する仕組みを提供してるみたい
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/ml_workflow.png)
 
 2024/11/16 現在ではハンズオンの説明と少し場所が変わっていた
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/notebook.png)
 
 conda_tensorflow_python36 がなかったので、conda_tensorflow2_p310 を選択
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/envchoose.png)
 
 実行してみるとエラーが出た。。。
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/error.png)
 
 chatGPT を参考にして環境を整えてみた
@@ -46,6 +50,7 @@ python -m ipykernel install --user --name tensorflow_p36 --display-name "Python 
 ```
 
 ノートブックインスタンスを再起動すると tensorflow_p36 が出てきた
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/after_reboot.png)
 
 と思ったらなんか消えた。。。よくわからん
@@ -119,6 +124,7 @@ print(neigh.predict_proba([[0.9]]))
 ```
 
 実際にトレーニングデータを読み込ませてみた。X_train[0]は 6 のようだ
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/k_1.png)
 
 答え合わせ。正解！！
@@ -142,6 +148,7 @@ Wall time: 609 ms
 ## 決定木
 
 こんな感じでルールを作成して振り分ける
+
 ![]({{site.baseurl}}/images/aws/ml-handson-beginner/ketteigi.png)
 
 画像分類をする場合は「N 番目の画素が K 以上かどうか」という人間が理解しにくいルールができあがる
