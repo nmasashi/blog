@@ -99,18 +99,18 @@ var start_ms;
 
 ```js
 // resultに0未満の数が入るのか、そうではない数がはいるのかいまいちわからない
-result = numbers.filter(num < 0)
+result = numbers.filter(num < 0);
 
 // こっちの方がわかりやすい
-result = numbers.select(num < 0)
+result = numbers.select(num < 0);
 ```
 
-限界値を定数化したい場合は```min```または```max```を使用する
+限界値を定数化したい場合は`min`または`max`を使用する
 
-範囲を指定するときは```first```, ```end```または```begin```,```end```を使用する
+範囲を指定するときは`first`, `end`または`begin`,`end`を使用する
 
-bool値が格納される変数には頭に```is/has/can/should```などを付ける
+bool 値が格納される変数には頭に`is/has/can/should`などを付ける
 
-```get(), size()```といったメソッドは軽量であることが期待される
+`get(), size()`といったメソッドは軽量であることが期待される
 
-## 4章 美しさ
+## 4 章 美しさ
