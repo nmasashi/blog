@@ -5,9 +5,6 @@ date: 2024-08-31
 categories: aws lambda
 ---
 
-- TOC
-{:toc}
-
 # はじめてのサーバーレス
 
 こちらのハンズオンを実施した記録
@@ -16,22 +13,22 @@ https://github.com/harunobukameda/AWS-Amplify-AWS-Lambda-Amazon-DynamoDB-AWS-API
 
 Cloud9が使えなくなっているので、頑張って実施してく。。。
 
-# DynamoDB作成
+## DynamoDB作成
 
 パーティションキーとソートキーを設定してデフォルト設定で作成
 
 ![]({{site.baseurl}}/images/aws/first-serverless/dynamo_init.png)
 
-# Lambda用のpolicy作成
+## Lambda用のpolicy作成
 
 ![]({{site.baseurl}}/images/aws/first-serverless/lambda_policy.png)
 
-# Lambda用のRole作成
+## Lambda用のRole作成
 
 ![]({{site.baseurl}}/images/aws/first-serverless/role.png)
 
 
-# Lambda作成
+## Lambda作成
 
 作成したロールを付与してlambda関数作成
 

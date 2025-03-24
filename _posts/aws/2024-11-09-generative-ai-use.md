@@ -5,9 +5,6 @@ date: 2024-11-09
 categories: aws ai
 ---
 
-- TOC
-{:toc}
-
 # 生成AI体験ワークショップ
 
 下記ハンズオンを実施した記録
