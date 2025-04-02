@@ -193,9 +193,10 @@ while(age < MAX_AGE)
 
 ## 8 章巨大な式を分割する
 
-8.1 
+8.1
 
 説明変数を使用する例
+
 ```js
 // なにとrootを比較しているのか直ぐにはわからない
 if line.split(':').strip() == "root":
@@ -209,21 +210,24 @@ if username == "root":
 8.2
 
 要約変数を使用する例
+
 ```js
 // request.user.id == document.owner_idがどのような比較なのか読み解く必要がある
-if(request.user.id == document.owner_id){
-
+if (request.user.id == document.owner_id) {
 }
-if(request.user.id != document.owner_id){
-  
+if (request.user.id != document.owner_id) {
 }
 
 // 比較の意味がわかりやすくなり、読み手がこの後の処理を予測しやすい
-user_owns_document = (request.user.id == document.owner_id)
-if(user_owns_document){} 
-if(!user_owns_document){} 
+user_owns_document = request.user.id == document.owner_id;
+if (user_owns_document) {
+}
+if (!user_owns_document) {
+}
 ```
 
 8.3
 
 複雑なロジックを簡潔にしすぎて可読性が落ちる場合がある。分けた方がわかりやすい場合はそのようにする。
+
+## 9 章 変数と読みやすさ
