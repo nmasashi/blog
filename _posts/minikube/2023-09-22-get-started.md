@@ -5,9 +5,6 @@ date: 2023-09-21 17:35:11 +0900
 categories: Kubernetes minikube
 ---
 
-- TOC
-{:toc}
-
 # minikube start
 
 minikube version: v1.31.2

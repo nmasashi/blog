@@ -8,14 +8,29 @@
         var tocList = document.getElementById("toc-list");
         var headers = document.querySelectorAll("h2, h3"); // h2, h3, h4をターゲットに
 
+        var currentH2Item = null;
+
         headers.forEach(function (header) {
             var link = document.createElement("a");
-            link.href = "#" + header.id; // 見出しのidをリンクに設定
-            link.textContent = header.textContent; // 見出しのテキストをリンクに設定
+            link.href = "#" + header.id;
+            link.textContent = header.textContent;
 
             var listItem = document.createElement("li");
             listItem.appendChild(link);
-            tocList.appendChild(listItem);
+
+            if (header.tagName === "H2") {
+                // H2の場合、メインリストに追加
+                tocList.appendChild(listItem);
+                currentH2Item = listItem;
+            } else if (header.tagName === "H3" && currentH2Item) {
+                // H3の場合、現在のH2のサブリストに追加
+                var subList = currentH2Item.querySelector("ul");
+                if (!subList) {
+                    subList = document.createElement("ul");
+                    currentH2Item.appendChild(subList);
+                }
+                subList.appendChild(listItem);
+            }
         });
     });
 </script>

@@ -5,8 +5,6 @@ date: 2023-10-15
 categories: Kubernetes minikube
 ---
 
-- TOC
-{:toc}
 
 # Multi-Node Clusters
 
