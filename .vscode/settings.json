@@ -4,7 +4,8 @@
 			"comments": "on",
 			"strings": "on",
 			"other": "on"
-		}
+		},
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"vetur.format.defaultFormatter.html": "none",
 	"editor.defaultFormatter": null,
