@@ -355,3 +355,408 @@ f.closed # ← trueになる。withを使用しない場合、f.close()を実行
 with 文に対応したオブジェクトはコンテキストマネージャーと呼ばれる（9 章で詳しく説明）
 
 ## 4 章 データ構造
+
+### None
+
+None は、C 言語や Java でいう`null`に相当するもの。条件式で使用する場合は偽となり、比較する場合は`==`などを使用せずに`is`や`is not`を使用する。
+
+```py
+if n is None:
+    処理
+```
+
+### ブール演算
+
+or, and, not の 3 種類。
+
+- or と and は**bool 型の変数(`True` or `False`)が返るわけではなく**、真または偽に判定されたオブジェクトが返る。（※直接、`True` と `False`を比較していた場合は`True` と `False`のどちらかが返る）
+- not は`True` か `False` が返る。
+
+```py
+x = ['book']
+y = []
+z = 1
+print(x or y)   # ['book']
+print(x and y)  # []
+print(x or z)   # ['book']
+print(x and z)  # 1
+print(z and x)  # ['book']
+print(not x)    # False
+```
+
+**感想** わかりにく！（笑）
+
+- `x or y`は`x`が真なら`y`は評価されない
+- `x and y`は`x`が偽なら`y`は評価されない
+
+### 数値どうしの演算
+
+```py
+print(1 + 2)    # 整数どおしの計算は整数
+print(1 + 2.0)  # 小数が混じると結果は小数
+print(7 / 2)    # 整数どおしでも小数になる
+print(7 // 2)   # 小数点以下切り捨て
+print(7 ** 2)   # 7の2乗
+```
+
+出力
+
+```sh
+3
+3.0
+3.5
+3
+49
+```
+
+小数を使用した結果比較は注意が必要（[詳細](https://docs.python.org/ja/3/tutorial/floatingpoint.html)）。
+
+```py
+print(0.1 + 0.1 + 0.1 == 0.3)
+print(round(0.1 + 0.1 + 0.1, 1) == round(0.3, 1))   # roundを使用して小数点以下1桁で丸めている
+```
+
+出力
+
+```sh
+False
+True
+```
+
+`round`や math モジュールの`math.isclose()`などで対応可能
+
+- python は整数の精度に制限ないため、メモリの許す限り大きな値を扱える
+- 無限大(`float(inf)`)は float 型
+- 数値として扱えない値である NaN (not a number)も float 型(`float('nan')`)
+
+### str 型
+
+ダブルクオートかシングルクオートでくくると文字列を定義できる。3 つのクオートでくくると改行を含めた文字列にできる。
+また、長い文字列を定義するときなどは`()`でくくることで分けて定義できる。
+
+```py
+notebook = """
+note
+book
+"""
+
+url = ('htts://hogehoge.com'
+       '/fugafuga/hoge/fuga'
+       '/2025/08/21')
+
+print(notebook)
+print(url)
+```
+
+出力
+
+```sh
+
+note
+book
+
+htts://hogehoge.com/fugafuga/hoge/fuga/2025/08/21
+```
+
+### 文字列の演算
+
+`+`で結合できる。`*`を使用すると繰り返しになる。
+
+```py
+book = 'book'
+
+print('note' + book)
+print(book * 2)
+```
+
+出力
+
+```sh
+notebook
+bookbook
+```
+
+### 条件式での文字列の利用
+
+```py
+print(bool(''))     # False
+print(bool('book')) # True
+print('oo' in 'book')   # True
+print('oo' in 'book')   # True
+print('oo' not in 'book')   # False
+```
+
+### f-string
+
+```py
+title = 'book'
+print(f'This is a {title}')
+```
+
+出力
+
+```sh
+This is a book
+```
+
+`{}`でくくった式を利用して変数を確認することもできる。デバックに便利
+
+```py
+title = 'book'
+print(f'{title=}')
+print(f'{title.upper()=}')
+```
+
+出力
+
+```sh
+title='book'
+title.upper()='BOOK'
+```
+
+### format()
+
+基本的な使用方法。
+
+```sh
+print('python {} {}.'.format('practice', 'book'))
+print('python {1} {0}.'.format('practice', 'book'))
+print('python {p} {b}.'.format(p='practice', b='book'))
+```
+
+出力
+
+```sh
+python practice book.
+python book practice.
+python practice book.
+```
+
+アンパック（詳細は 5 章）を利用して辞書を渡すと、その辞書からキーワードをきにーして取得できた値に置換できる
+
+```py
+d = {'x': 'note', 'y': 'notebook', 'z': 'sketchbook'}
+books = '{x} {z}'
+print(books.format(**d))
+```
+
+出力
+
+```sh
+note sketchbook
+```
+
+### str 型とよく似た bytes 型
+
+bytes 型と str 型は相互に変換が可能
+
+```py
+book = 'Python実践入門'
+encoded = book.encode('utf-8')
+print(encoded)
+print(encoded.decode('utf-8'))
+```
+
+出力
+
+```sh
+b'Python\xe5\xae\x9f\xe8\xb7\xb5\xe5\x85\xa5\xe9\x96\x80'
+Python実践入門
+```
+
+### list 型
+
+要素の型はそろってなくて OK。基本的な操作。
+
+```py
+items = ['note', 'notebook', 'sketchbook']
+print(items)
+
+items.append('paperbook')
+print(f'追加：{items}')
+
+items = ['book'] + items
+print(f'結合：{items}')
+
+print(f'pop：{items.pop(0)}')
+print(f'pop後：{items}')
+
+del items[1]
+print(f'削除：{items}')
+```
+
+出力
+
+```sh
+['note', 'notebook', 'sketchbook']
+追加：['note', 'notebook', 'sketchbook', 'paperbook']
+結合：['book', 'note', 'notebook', 'sketchbook', 'paperbook']
+pop：book
+pop後：['note', 'notebook', 'sketchbook', 'paperbook']
+削除：['note', 'sketchbook', 'paperbook']
+```
+
+様々な方法での要素へのアクセス
+
+```py
+items = ['note', 'notebook', 'sketchbook']
+print(items)
+
+print(f'最後尾：{items[-1]}')
+print(f'最初の二つ：{items[0:2]}')
+print(f'最初の二つ：{items[:2]}')
+print(f'先頭を飛ばして最後まで：{items[1:]}')
+
+items[0:2] = [1, 2, 3]
+print(f'一部置き換え：{items}')
+```
+
+出力
+
+```sh
+['note', 'notebook', 'sketchbook']
+最後尾：sketchbook
+最初の二つ：['note', 'notebook']
+最初の二つ：['note', 'notebook']
+先頭を飛ばして最後まで：['notebook', 'sketchbook']
+一部置き換え：[1, 2, 3, 'sketchbook']
+```
+
+### tuple 型
+
+不変な配列を扱う型。定義後は変更不可能。
+
+作成方法
+
+```py
+items = ('note', 'notebook', 'sketchbook')
+print(items)
+```
+
+出力
+
+```sh
+('note', 'notebook', 'sketchbook')
+```
+
+要素へのアクセス方法は list 型と同じ。不変なので、変更しようとするとエラーになる。
+
+### 条件式で使える配列の性質
+
+- 要素が 1 つもない空の状態だと偽になる
+- in 演算子を使用すると任意の要素があるか確認できる
+
+```py
+print('note' in ['note', 'notebook', 'sketchbook']) # True
+```
+
+### dict 型
+
+いわゆる連想配列やマップや辞書型配列のようなもの(key-value ストア)
+
+- key に使用できるのは文字列、数値、タプルなどの不変オブジェクト（= list 型は不可能）
+- 空の場合は偽になる
+
+基本的な追加削除の操作
+
+```py
+items = {'note': 1, 'notebook': 2, 'sketchbook': 3}
+print(items)
+
+items['book'] = 4
+print(f'要素追加：{items}')
+
+print(f'要素削除：{items.pop('notebook')}')
+print(f'要素削除後：{items}')
+
+del items['sketchbook']
+print(f'要素削除後(del)：{items}')
+```
+
+出力
+
+```sh
+{'note': 1, 'notebook': 2, 'sketchbook': 3}
+要素追加：{'note': 1, 'notebook': 2, 'sketchbook': 3, 'book': 4}
+要素削除：2
+要素削除後：{'note': 1, 'sketchbook': 3, 'book': 4}
+要素削除後(del)：{'note': 1, 'book': 4}
+```
+
+要素の削除前に値が欲しい場合は`pop`を利用する。`del`を使用すると値の取得はできない。
+
+要素へのアクセスは基本的に`get`を使用する。`items['note']`のような書き方でも値は取得できるが、キーがない場合は例外が発生する。
+
+```py
+items = {'note': 1, 'notebook': 2, 'sketchbook': 3}
+
+print(items['note'])
+print(items['book'])
+```
+
+出力
+
+```sh
+1
+Traceback (most recent call last):
+  File "sample.py", line 17, in <module>
+    print(items['book'])
+          ~~~~~^^^^^^^^
+KeyError: 'book'
+```
+
+`get`を使用するとキーがない場合はデフォルトで`None`が返る。デフォルトは`get`の引数で変更可能
+
+```py
+items = {'note': 1, 'notebook': 2, 'sketchbook': 3}
+
+print(items.get('note'))    # 1
+print(items.get('book'))    # None
+print(items.get('book', 0)) # 0
+```
+
+for 文での挙動
+
+```py
+items = {'note': 1, 'notebook': 2, 'sketchbook': 3}
+
+# keyだけ
+for key in items:
+    print(key)
+
+# valueだけ
+for value in items.values():
+    print(value)
+
+# key, valueどちらも
+for key, value in items.items():
+    print(key, value)
+```
+
+出力
+
+```sh
+note
+notebook
+sketchbook
+1
+2
+3
+note 1
+notebook 2
+sketchbook 3
+```
+
+in 演算子を使用すると key または value に値が存在するか確認可能
+
+```py
+items = {'note': 1, 'notebook': 2, 'sketchbook': 3}
+
+# keyの存在確認
+print('note' in items)  # True
+print('book' in items)  # False
+# valueの存在確認
+print(1 in items.values())  # True
+```
+
+### set 型

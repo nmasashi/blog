@@ -1,12 +1,22 @@
 {% if page.layout == "post" %}
 <div id="toc-container">
-    <ul id="toc-list"></ul>
+    <ul id="toc-list" style="overflow-y: auto;"></ul>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var tocList = document.getElementById("toc-list");
         var headers = document.querySelectorAll("h2, h3"); // h2, h3, h4をターゲットに
+        
+        // 動的に最大高さを設定
+        function setTocMaxHeight() {
+            var viewportHeight = window.innerHeight;
+            var maxHeight = Math.max(300, viewportHeight * 0.8); // 最小300px、画面の80%
+            tocList.style.maxHeight = maxHeight + "px";
+        }
+        
+        setTocMaxHeight();
+        window.addEventListener("resize", setTocMaxHeight);
 
         var currentH2Item = null;
 
