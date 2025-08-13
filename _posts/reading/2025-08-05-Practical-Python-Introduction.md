@@ -760,3 +760,275 @@ print(1 in items.values())  # True
 ```
 
 ### set 型
+
+- 可変オブジェクト
+- 一意の要素の集合を扱う（重複は許さない）
+- 要素の順番を保持しないのでインデックスでのアクセス(`items[0]`みたいなの)は不可能
+
+```py
+items = {'note', 'notebook', 'sketchbook'}
+print(items)
+
+items.add('book')
+print(f'追加: {items}')
+
+items.remove('book')
+print(f'削除: {items}')
+
+# 順序を持たないため、popはどこから削除されるのか不定
+print(f'pop: {items.pop()}')
+print(f'削除(pop): {items}')
+```
+
+出力
+
+```sh
+{'sketchbook', 'note', 'notebook'}
+追加: {'sketchbook', 'note', 'notebook', 'book'}
+削除: {'sketchbook', 'note', 'notebook'}
+pop: sketchbook
+削除(pop): {'note', 'notebook'}
+```
+
+### frozenset 型
+
+- set 型を不変にした型
+- set 型と同様に、重複を許さず順序の保証もない
+
+作成方法
+
+```py
+items = frozenset(['note', 'notebook'])
+```
+
+### 集合の演算
+
+```py
+set_a = {'note', 'notebook', 'sketchbook'}
+set_b = {'book', 'rulebook', 'sketchbook'}
+
+print(f'和集合: {set_a | set_b}')   # set_a.union(set_b)も同じ
+print(f'差集合: {set_a - set_b}')   # set_a.difference(set_b)も同じ
+print(f'積集合: {set_a & set_b}')   # set_a.intersection(set_b)も同じ
+print(f'対称差: {set_a ^ set_b}')   # 和集合から積集合を引いたもの。set_a.symmetric_difference(set_b)も同じ
+```
+
+出力
+
+```sh
+和集合: {'sketchbook', 'notebook', 'rulebook', 'note', 'book'}
+差集合: {'note', 'notebook'}
+積集合: {'sketchbook'}
+対称差: {'note', 'book', 'notebook', 'rulebook'}
+```
+
+部分集合の判定
+
+```py
+set_a = {'note', 'notebook', 'sketchbook'}
+print({'note', 'notebook'} <= set_a)    # True
+```
+
+set 型と frozset 型の for 文も list 型と同じような書き方(`for item in items`)が可能だが、要素の順番が不定なのは注意が必要
+
+### 内包表記
+
+例えば、`['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']`というリストを作成したい場合、内包表記を使用しない場合は下記のようなものになる
+
+```py
+numbers = []
+for i in range(10):
+    numbers.append(str(i))
+```
+
+内包表記を利用すると下記のようになる。
+
+```py
+numbers = [str(v) for v in range(10)]
+```
+
+内包表記は`[リストの要素 for 変数 in イテラブルなオブジェクト]`という構文。
+また、内包表記で使用した変数のスコープは内包表記内で閉じている。
+つまり`[str(v) for v in range(10)]`の`v`はこの内包表記内がスコープ。
+
+このような入れ子構造も可能
+
+```py
+tuples = [(x, y) for x in [1, 2, 3] for y in [4, 5, 6]]
+# [(1, 4), (1, 5), (1, 6), (2, 4), (2, 5), (2, 6), (3, 4), (3, 5), (3, 6)]
+```
+
+入れ子にした分、可読性が下がるのでそこは普通の for 文を使用するか要判断
+
+if 文も可能
+
+```py
+even = [x for x in range(10) if x % 2 == 0]
+# [0, 2, 4, 6, 8]
+```
+
+- 内包表記で集合を作成することも可能(例：`{v for v in range(10)}`)
+- 内包表記で辞書を作成することも可能(例：`{str(v): v for v in range(10)}`)
+  - `{'0': 0, '1': 1, ...}`
+
+## 第 5 章 関数
+
+### 関数の定義と実行
+
+基本的な構文
+
+```py
+def 関数名(引数1, 引数2, ...)
+    処理
+    return 戻り値
+```
+
+`return`はなくても OK。ない場合は`None`が返る
+
+引数のデフォルト値を指定できる。ただし、不変オブジェクトを指定すること（可変オブジェクトも指定可能だがバグのもとになる）。
+
+```py
+def print_page(content='no content'):
+    print(content)
+```
+
+### 関数はオブジェクト
+
+関数もオブジェクトなので変数に代入することができる
+
+```py
+def print_page(content='no content'):
+    print(content)
+
+# 変数fに関数を代入
+f = print_page
+f()
+```
+
+出力
+
+```sh
+no content
+```
+
+### 関数のさまざまな引数
+
+何も指定がなければ順番通りにあてはめられるが、引数名で指定も可能。
+位置と引数名の組み合わせも可能だが、位置でのしてより後ろに引数名での指定を持ってくる必要がある。
+
+```py
+def minus(a, b):
+    return a - b
+
+
+# 位置で指定
+print(minus(1, 2))
+
+# 引数名で指定
+print(minus(b=1, a=2))
+
+# 位置と引数名の組み合わせも可能
+print(minus(1, b=2))
+# print(minus(a=1, 2))←これはダメ
+```
+
+引数名に`*`を付けることで可変長の引数を定義可能。慣例として`*args`とされることが多い。
+
+- 関数は`*args`はタプルとして受け取る
+- `*args`が空の場合は空のタプルになる
+- 位置引数より後にしておいた方が良い（良くない例：`def print_pages(*args, content):`）
+
+```py
+def print_pages(content, *args):
+    print(content)
+    for more in args:
+        print(f'more: {more}')
+
+
+print_pages('content name', 'contentA', 'contentB', 'contentC')
+```
+
+出力
+
+```sh
+content name
+more: contentA
+more: contentB
+more: contentC
+```
+
+引数名に`**`を付けることで可変長のキーワード引数を定義可能。慣例として`**kwargs`とされることが多い。
+
+```py
+def print_pages(*args, **kwargs):
+    for more in args:
+        print(f'more: {more}')
+    for key, value in kwargs.items():
+        print(f'{key}: {value}')
+
+
+print_pages('contentA', 'contentB', 'contentC',
+            published=2019, author='rei suyama')
+```
+
+出力
+
+```sh
+more: contentA
+more: contentB
+more: contentC
+published: 2019
+author: rei suyama
+```
+
+※可変長の引数は便利だけど可読性に問題が出る場面もあるので、注意して使用すること
+
+キーワードのみ引数で呼び出し時に引数名の指定を強制することができる。ユーザーに引数の意味を意識させたり、可読性の向上に効果がある。
+
+下記のように、キーワードのみ引数にしたい引数の前に`*`を指定する
+
+```py
+def increment(page_num, last, *, ignore_error=False):
+    処理
+
+increment(1, 2, ignore_error=True)
+
+# これはエラー
+# increment(1, 2, True)
+```
+
+一方で、位置のみ引数にしたい場合はその引数の後に`/`を指定することで実現できる
+
+```py
+def add(x, y, /, z):
+    処理
+
+add(1, 2, z=3)
+
+# これはエラー
+# add(x=1, y=2, z=3)
+```
+
+### 引数リストのアンパック
+
+関数呼び出し時に`*`演算子をリストに使用すると引数を展開して渡してくれる(JS でいうところのスプレッド構文的な感じ？)。
+辞書型を値を展開して渡した場合は`**`演算子を使用する。
+
+```py
+def print_page(one, two, three):
+    print(one)
+    print(two)
+    print(three)
+
+
+items = ['mycontent', 'contentA', 'contentB']
+print_page(*items)
+```
+
+出力
+
+```sh
+mycontent
+contentA
+contentB
+```
