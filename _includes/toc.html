@@ -37,7 +37,28 @@
                 var subList = currentH2Item.querySelector("ul");
                 if (!subList) {
                     subList = document.createElement("ul");
+                    subList.style.display = "none"; // 初期状態で非表示
                     currentH2Item.appendChild(subList);
+                    
+                    // 折り畳みボタンを追加
+                    var toggleBtn = document.createElement("span");
+                    toggleBtn.textContent = " ▼";
+                    toggleBtn.style.cursor = "pointer";
+                    toggleBtn.style.fontSize = "0.8em";
+                    toggleBtn.style.marginLeft = "5px";
+                    
+                    toggleBtn.addEventListener("click", function(e) {
+                        e.preventDefault();
+                        if (subList.style.display === "none") {
+                            subList.style.display = "block";
+                            toggleBtn.textContent = " ▲";
+                        } else {
+                            subList.style.display = "none";
+                            toggleBtn.textContent = " ▼";
+                        }
+                    });
+                    
+                    currentH2Item.querySelector("a").appendChild(toggleBtn);
                 }
                 subList.appendChild(listItem);
             }
