@@ -354,7 +354,7 @@ f.closed # ← trueになる。withを使用しない場合、f.close()を実行
 
 with 文に対応したオブジェクトはコンテキストマネージャーと呼ばれる（9 章で詳しく説明）
 
-## 4 章 データ構造
+## 第 4 章 データ構造
 
 ### None
 
@@ -1087,3 +1087,325 @@ def decrement(page_num: int) -> int:
 ```
 
 ## 第 6 章 クラスとインスタンス
+
+### class キーワードによるクラスの定義
+
+基本的な構文
+
+```py
+class クラス名(基底クラス名):
+    def メソッド名(引数1, 引数2, ...):
+        処理
+        return 戻り値
+```
+
+例
+
+```py
+class Page:
+    def __init__(self, num, content):
+        self.num = num
+        self.content = content
+
+    def output(self):
+        return f'{self.content}'
+
+
+title_page = Page(0, 'Python Practice Book')
+print(title_page.output()) # Python Practice Book
+```
+
+`__init__`は特殊メソッドの一つでインスタンスの初期化に利用する。Java や C++でいうコンストラクタに似ているが、インスタンスが生成されてから`__init__`が動くあたりが少し違う。
+`__new__`がコンストラクタに相当するものになり、クラスのインスタンス化などを行う。基本的に`__new__`はあまり使用せず、`__init__`で事足りるケースがほとんど。
+
+関数宣言の引数の最初の`self`は呼び出し元のインスタンスを表す。呼び出す側は 2 個目の引数から設定する感じ。
+
+### プロパティ
+
+- property: `@property`を付けるとそのインスタンスメソッドは`()`を付けることなく呼び出せる
+- setter: メソッド名に`@property`を付けたものを設定する際に利用する（例：`@discounts.setter`）
+
+```py
+class Book:
+    def __init__(self, raw_price):
+        if raw_price < 0:
+            raise ValueError('price must be positive')
+        self.raw_price = raw_price
+        self._discounts = 0
+
+    @property
+    def discounts(self):
+        return self._discounts
+
+    @discounts.setter
+    def discounts(self, value):
+        if value < 0 or 100 < value:
+            raise ValueError('discount must be between 0 and 100')
+        self._discounts = value
+
+    @property
+    def price(self):
+        multi = 100 - self._discounts
+        return int(self.raw_price * multi / 100)
+
+
+book = Book(2000)
+print(book.discounts)   # 0
+print(book.price)       # 2000
+book.discounts = 20
+print(book.price)       # 1600
+```
+
+python では`_`から始まる属性はプライベートな属性として開発者は扱う。言い換えると`_`から始まる属性でも参照も書き換えも可能。
+
+`__`から属性名を始めるとそのままの名前では参照できないが、`クラス名__属性名`でアクセスできるので、結局プライベ　ートではない。
+
+Python コミュニティてきには、開発者がプライベートなものだとしているならそれを利用しないようにしましょうとなっているみたい（笑）
+
+**感想**：プライベート変数をプライベートとして扱うのが暗黙の了解になっているのか。。。
+
+### クラス変数
+
+- クラスで定義する変数
+- 全インスタンスで共有される
+- 同名の変数がインスタンス変数にある場合は、そのインスタンスはインスタンス変数の方を使用する
+
+```py
+class Page:
+    book_title = 'Python Practice Book'
+
+
+print(Page.book_title)  # Python Practice Book
+first_page = Page()
+second_page = Page()
+print(first_page.book_title)    # Python Practice Book
+
+# クラス変数の変更
+Page.book_title = 'no title'
+print(first_page.book_title)    # no titlep
+print(second_page.book_title)   # no title
+
+# 新しいインスタンス変数の定義
+first_page.book_title = 'first page title'
+print(first_page.book_title)    # first page title
+print(second_page.book_title)   # no title
+```
+
+### クラスメソッド
+
+- `@classmethod`を付けることで定義可能
+- 第一引数はクラスオブジェクトとして`cls`とするのが一般的
+- インスタンスを作成しなくても呼び出せるし、インスタンスからでも呼び出せる
+
+使用例
+
+```py
+class Page:
+    @classmethod
+    def print_pages(csl, *pages)
+
+Page.print_pages('first', 'second')
+
+page_instance = Page()
+page_instance.print_pages('first', 'second')
+```
+
+### スタティックメソッド
+
+- `@staticmethod`を使うと定義可能
+- 第一引数にきまりはない（呼び出し時に渡されたものがそのまま来る）
+- あんまり使われないみたい（スタティックメソッドはモジュールでまとめる？）
+
+使用例
+
+```py
+class Page:
+    @staticmethod
+    def check_blank(page):
+        return bool(page.content)
+
+page = ...
+Page.check_blank(page)
+```
+
+### メソッドのオーバーライドと super()による基底クラスへのアクセス
+
+- `class クラス名(基底クラス):`で継承可能
+- 親クラスのメソッドは`super()`で呼び出し可能
+
+```py
+class Page:
+    def __init__(self, num, content):
+        self.num = num
+        self.content = content
+
+    def output(self):
+        return f'{self.content}'
+
+# Pageクラスを継承
+class TitlePage(Page):
+    # outputのオーバーライド
+    def output(self):
+        title = super().output()
+        return title.upper()
+
+
+title = TitlePage(0, 'Python Practice Book')
+print(title.output())   # PYTHON PRACTICE BOOK
+```
+
+### 多重継承
+
+`class クラス名(基底クラス1, 基底クラス2)`のような感じで書ける。それぞれのクラスがどのような継承関係になっているか注意が必要。
+メソッド解決の順序などで問題が出る可能性があり、それは`__mro__`を確認するといいらしい
+
+## 第 7 章モジュールとパッケージ名前空間とスコープ
+
+### モジュールの作成
+
+- hogehoge.py を作成したらそれが hogehoge モジュールという扱い
+
+### モジュールのインポート
+
+`import`を使用してモジュールを読み込む
+
+```py
+import base64
+import ...
+
+def ...
+```
+
+例えば encoder.py として下記のようなファイルを作成
+
+```py
+import base64
+import sys
+
+
+def str_to_base64(x):
+    """文字列をbase64表現に変換する
+    """
+    return base64.b64encode(x.encode('utf-8'))
+
+
+def main():
+    target = sys.argv[1]
+    print(str_to_base64(target))
+
+
+if __name__ == '__main__':
+    main()
+```
+
+コマンドラインからの実行時は`__name__`の値が`__main__`になるから main 関数が実行される。
+
+この encoder モジュールをインポートするとこんな感じ。
+
+```py
+import encoder
+
+print(encoder.str_to_base64('python'))
+```
+
+import された場合は`__name__`の値がモジュール名（今回は`encoder`）になるので encoder.py は読み込まれるが、main 関数は実行されない。
+
+### パッケージの作成
+
+b64 というパッケージを作成して import し、利用する例
+
+フォルダ構成
+
+```txt
+section07/
+├── 07_01_import.py
+└── b64
+    ├── __init__.py
+    ├── decoder.py
+    └── encoder.py
+```
+
+\_\_init\_\_.py は空ファイル
+
+decoder.py
+
+```py
+import base64
+
+
+def base64_to_str(x):
+    return base64.b64decode(x).decode('utf-8')
+```
+
+encoder.py
+
+```py
+import base64
+import sys
+
+
+def str_to_base64(x):
+    """文字列をbase64表現に変換する
+    """
+    return base64.b64encode(x.encode('utf-8'))
+
+
+def main():
+    target = sys.argv[1]
+    print(str_to_base64(target))
+
+
+if __name__ == '__main__':
+    main()
+```
+
+07_01_import.py
+
+```py
+from b64 import encoder, decoder
+
+encoded = encoder.str_to_base64('python')
+print(encoded)  # b'cHl0aG9u'
+decoded = decoder.base64_to_str(encoded)
+print(decoded)  # python
+```
+
+\_\_init\_\_.py はパッケージの初期化を行うファイルになる。
+もし、下記の内容を記述していた場合は、`import b64`で`b64.str_to_base64('python')`が利用できる。
+
+\_\_init\_\_.py の設定例
+
+```py
+from .encoder import str_to_base64
+from .decoder import base64_to_str
+```
+
+パッケージ使用例
+
+```py
+import b64
+
+b64.str_to_base64('python')
+```
+
+### import 文の比較
+
+様々な import 方法があり、その一部の例
+
+- `from パッケージ名 import モジュール名`
+- `from パッケージ名 import モジュール名 as 別名`
+- `from パッケージ名 import *`
+
+ワイルドカード`*`を利用するととモジュールに定義されている`__all__`で指定されたモジュールが一括でインポートされる。しかし、想定外の問題も起こりえるのであまりワイルドカードは使用しない方が良い。
+
+モジュール名が重複する場合は`as`を利用し別名を付ける
+
+### モジュール検索の流れ
+
+下記のような順番でモジュールを検索しているらしい（OS によって違うかも？）
+
+1. ビルトインモジュール
+2. カレントディレクトリのモジュール
+3. ビルトインモジュール以外の標準ライブラリ
+
+## 第 8 章 組み込み関数と特殊メソッド
