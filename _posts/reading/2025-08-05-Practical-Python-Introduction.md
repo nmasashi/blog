@@ -1032,3 +1032,58 @@ mycontent
 contentA
 contentB
 ```
+
+### lambda 式
+
+基本的な構文は下記のもので、一行で記述する必要がある。
+
+```py
+lambda 引数1, 引数2, ...: 戻り値になる式
+```
+
+```py
+def increment(num): return num + 1
+
+print(increment(2)) # 3
+```
+
+`filter`や`sorted`などで使用されることが多い
+
+```py
+nums = ['one', 'two', 'three']
+
+filtered = filter(lambda x: len(x) == 3, nums)
+print(list(filtered))
+```
+
+出力
+
+```sh
+['one', 'two']
+```
+
+### 型情報の付与
+
+- 関数にはアノテーションを用いて型ヒントを追加できる
+- 実行時に型チェックが実施されるわけではない（= 違反してもエラーにはならない）
+- 保守性の向上に効果がある
+- 静的解析ツール mypy を活用したチェックで一致していない呼び出し個所のチェックが可能
+
+基本的な構文
+
+```py
+def 関数名(arg: arg1の型, arg2: arg2の型, ...) -> 戻り値の型:
+    処理
+    return 戻り値
+```
+
+使用例
+
+```py
+def decrement(page_num: int) -> int:
+    prev_page: int
+    prev_page = page_num - 1
+    return prev_page
+```
+
+## 第 6 章 クラスとインスタンス
