@@ -1409,3 +1409,258 @@ b64.str_to_base64('python')
 3. ビルトインモジュール以外の標準ライブラリ
 
 ## 第 8 章 組み込み関数と特殊メソッド
+
+### オブジェクトの型を調べる関数
+
+- `isinstance`でインスタンスオブジェクトが任意のクラスに属しているか確認できる
+- `issubclass`でクラスが任意のクラスに属しているか確認できる
+- `callable`で()を付けて呼び出せるか確認できる
+
+```py
+# インスタンスオブジェクトdがdict型か確認(True or False)
+isinstance(d, dict)
+
+# インスタンスオブジェクトdがdict型かlist型かの確認。dictかlistならTrue
+isinstance(d, (dict, list))
+
+# dictがobjectに属しているか確認
+issubclass(dict, object)    # True
+
+# isinstanceが呼び出し可能か確認
+callable(isinstance)    # True
+```
+
+### オブジェクトの属性に関する関数
+
+- `hasattr`: その属性を持っているか確認できる
+- `getattr, setattr, delattr`: オブジェクトの属性名を指定して操作可能（使う場面がよくわからん）
+
+### イテラブルなオブジェクトを受け取る関数
+
+zip を利用すると複数のイテラブルを受け取りタプルを返す。zip_longest を利用すると一番長いイテラブルなオブジェクトに合わせたものを返せる。
+
+```py
+from itertools import zip_longest
+
+x = [1, 2, 3]
+y = [4, 5, 6, 7]
+z = [8, 9]
+
+print(f'zip: {list(zip(x, y, z))}')
+print(f'zip_longest: {list(zip_longest(x, y, z, fillvalue=0))}')
+```
+
+出力
+
+```sh
+zip: [(1, 4, 8), (2, 5, 9)]
+zip_longest: [(1, 4, 8), (2, 5, 9), (3, 6, 0), (0, 7, 0)]
+```
+
+sorted を使用するととイテラブルのオブジェクトを並び替えた新しいオブジェクトを取得できる。また、`key`を指定するとソート用の関数を指定できる。
+
+（ちなみに、`list.sort()`は自分自身の並び替え）
+
+```py
+x = ['1', '2', 5, 4, 1]
+
+y = sorted(x, key=lambda v: int(v))
+print(y)    #['1', 1, '2', 4, 5]
+```
+
+filter はこんな感じ
+
+```py
+x = (1, 2, 3, 4, 5)
+print(list(filter(lambda i: i < 3, x))) #[1, 2]
+```
+
+map はこんな感じ
+
+```py
+x = (1, 2, 3, 4, 5)
+y = (1, 2, 3, 4, 5)
+
+# 1つの配列を処理するマップ
+print(list(map(lambda i: i * 3, x)))    # [3, 6, 9, 12, 15]
+
+# 2つの配列を処理するマップ
+print(list(map(lambda i, j: [i*3, j*2], x, y))) # [[3, 2], [6, 4], [9, 6], [12, 8], [15, 10]]
+```
+
+all と any
+
+- all: 全て真の場合`True`
+- any: どれかが真だと`True`
+
+```py
+
+all(['python', 'practice', 'book']) # True
+all(['python', 'practice', '']) # False
+
+any(['python', 'practice', '']) # True
+any(['', '', '']) # False
+
+```
+
+### そのほかの組み込み関数
+
+他にもいろいろある。
+
+[その他の組み込み関数](https://docs.python.org/ja/3/library/functions.html#built-in-functions)
+
+### 特殊メソッド
+
+主な特殊メソッドと役割
+
+- `__str__()`: print 関数で暗黙的に呼び出される
+- `__repr__()`: `__str__()`と同じようにオブジェクトを文字列表現で返すが、デバックに役立つ情報を提供する
+- `__bool__()`: オブジェクトの真理値の評価を設定する
+- `__call__()`: インスタンスを関数のように呼び出せる`インスタンス名()`みたいな感じ。
+
+このほかにも属性への代入時に呼び出される`__setattr__()`や取得時に呼びされる`__getattr__()`などがある
+
+[そのほかの特殊メソッド](https://docs.python.org/ja/3/reference/datamodel.html#special-method-names)
+
+## Python 特有のさまざまな機能
+
+### ジェネレータ
+
+ループ処理に`yield`という一時停止？的なキーワードを入れることにより、必要なタイミングで処理が走るようになり、メモリ使用量の最大値を削減できる。
+例えば、大規模ファイルの読み込み処理に使用すると、一行読み込み → 一行処理 → 次の行読み込み →…という処理が書きやすくなる。
+大量のデータが必要だが逐次処理を行うようなユースケースで使用される。
+
+また、`yield`はコンテキストマネージャー(with を使うやつ)にも使用されている。
+
+### デコレータ
+
+Java でいうアノテーションのようなもの。よく使用されるユースケース
+
+- 関数の引数チェック
+- 関数の呼び出し結果のキャッシュ
+- 関数の実行時間の計測
+- Web API でのハンドラの登録、ログイン状態による制限
+
+`@lru_cache`を使用すると同じ引数で呼び出された関数の結果を maxsize 回までキャッシュする
+
+```py
+@lru_cache(maxsize=32)
+def heavy_function(n):
+    重い処理
+```
+
+読み取り専用クラスの作成
+
+```py
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Fruit:
+    name: str
+    print: int = 0
+
+# ここで設定した値から変更不可
+apple = Fruit(name='apple', price=128)
+```
+
+デコレータの実装例（関数の実行時間の測定）
+
+```py
+from functools import wraps
+import time
+
+
+def elapsed_time(f):
+    @wraps(f)
+    def wrapper(*arg, **kwargs):
+        start = time.time()
+        v = f(*arg, **kwargs)
+        print(f'{f.__name__}: {time.time() - start}')
+        return v
+    return wrapper
+
+
+@elapsed_time
+def func(n):
+    return sum(i for i in range(n))
+
+
+print(func(100))
+```
+
+出力
+
+```sh
+func: 7.152557373046875e-06
+4950
+```
+
+## 第 10 章 並行処理
+
+マルチスレッドの制御に関してはいつか読む。。。なんかめんどくさい。
+ThreadPoolExecutor とかそのあたり
+
+## 第 11 章 開発環境とパッケージの管理
+
+下記のことが書いてあった。必要になったら読む。。。
+
+- venv の使い方
+- パッケージの配布
+
+## 第 12 章 ユニットテスト
+
+### 単一モジュールのテスト
+
+```py
+import unittest
+
+
+def booksearc():
+    return {}
+
+
+class BookSearchTest(unittest.TestCase):
+    def test_booksearc(self):
+        self.assertEqual({}, booksearc())
+```
+
+出力
+
+```sh
+python3 -m unittest -v section12/12_01_unit.py
+test_booksearc (section12.12_01_unit.BookSearchTest.test_booksearc) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+実際にテストを書く際は`tests`フォルダを作成する
+
+```sh
+workspace/
+├── booksearch
+│   ├── __init__.py
+│   ├── api.py
+│   └── core.py
+├── setup.py
+└── tests
+    ├── __init__.py
+    ├── data
+    │   ├── YkGmfbil6L4C_smallThumbnail.jpeg
+    │   └── YkGmfbil6L4C_thumbnail.jpeg
+    ├── test_api.py
+    └── test_core.py
+```
+
+テスト実施時に前処理・後処理が必要な場合は下記で実装可能
+
+- setUp(): 前処理
+- tearDown(): 後処理
+
+モック用のモジュールなんかもいろいろある
+
+## 第 13 章 実践的な Python アプリケーションの開発
+
+気が向いたら読む
