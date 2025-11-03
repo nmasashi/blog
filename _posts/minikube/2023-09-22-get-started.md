@@ -5,8 +5,6 @@ date: 2023-09-21 17:35:11 +0900
 categories: Kubernetes minikube
 ---
 
-# minikube start
-
 minikube version: v1.31.2
 
 [minikube 公式の手順](https://minikube.sigs.k8s.io/docs/start/)を参考にしてインストールして動かくか確認
@@ -20,9 +18,9 @@ minikube version: v1.31.2
 ## インストール
 
 ```sh
-$ cd [WORK-DIR]
-$ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-$ sudo install minikube-linux-amd64 /usr/local/bin/minikube
+cd [WORK-DIR]
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
 
 ## 稼働確認
@@ -38,7 +36,7 @@ commit: fd7ecd9c4599bef9f04c0986c4a0187f98a4396e
 ### クラスターの開始
 
 ```shell
-$ minikube start
+minikube start
 😄  minikube v1.31.2 on Ubuntu 20.04 (amd64)
 👎  Unable to pick a default driver. Here is what was considered, in preference order:
     ▪ docker: Not healthy: "docker version --format {{.Server.Os}}-{{.Server.Version}}:{{.Server.Platform.Name}}" exit status 1: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
@@ -110,7 +108,8 @@ http://127.0.0.1:43057/api/v1/namespaces/kubernetes-dashboard/services/http:kube
 初回は dashbord 用の pod が立ち上がるまで 10 分くらいかかった。
 
 こんな感じでダッシュボードが立ち上がる。
-![]({{site.baseurl}}/images/minikube/dashbord.png)
+
+![image]({{site.baseurl}}/images/minikube/dashbord.png)
 
 ## アプリケーションのデプロイ
 
@@ -146,7 +145,7 @@ kubernetes という名前のサービスは最初から作られていたっぽ
 minikube のコマンドを使用する方法
 
 ```shell
-$ minikube service hello-minikube
+minikube service hello-minikube
 ```
 
 kubectl でポートフォワードを使用して接続する方法
@@ -160,7 +159,7 @@ Handling connection for 7080
 ```
 
 ブラウザでアクセスするとこんな画面が表示される
-![]({{site.baseurl}}/images/minikube/sampleapp.png)
+![image]({{site.baseurl}}/images/minikube/sampleapp.png)
 
 #### 掃除
 
