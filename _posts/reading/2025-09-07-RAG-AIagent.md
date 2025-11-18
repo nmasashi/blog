@@ -3055,7 +3055,263 @@ Plan-and-Solve プロンプティングの例
 ```text
 Q: 生徒が20人いるダンスクラスで20%はコンテンポラリーダンスに登録し、それ以外はヒップホップに登録しました。ヒップホップに登録した生徒は何%でしょうか？
 
-A: 恥に見問題を理解し、問題を解決する計画に分割しましょう。その後、各プランを実行して問題をステップバイステップで解決しましょう。
+A: 初めに問題を理解し、問題を解決する計画に分割しましょう。その後、各プランを実行して問題をステップバイステップで解決しましょう。
 ```
 
 ### 8.3 汎用 LLM エージェントのフレームワーク
+
+#### AutoGPT
+
+- 2023 年 4 月リリース
+- ReAct 型エージェント
+- 達成したいゴールを設定し、LLM に実行すべきことを決定・アクションさせてその結果をプロンプトにフィードバックすることを繰り返し、ゴールを達成する
+
+#### BabyAGI
+
+- 2023 年 4 月頃リリース？（AutoGPT と同時期にリリース）
+- OSS
+
+1. ユーザーから目標やタスクが支持されると、タスク内容がタスク管理キューに登録される
+2. 実行エージェント (GPT-4) がタスクを実行し、タスクと結果のペアをメモリに登録
+3. 実行エージェント (GPT-4) はタスクの実行結果を、タスク生成エージェント (GPT-4) に送信
+4. タスク生成エージェント(GPT-4)が次のタスクを考え、既存タスクと重複しないようにタスクキューに登録
+5. タスクがキューに追加されると、優先度づけエージェント (GPT-4) がタスクリストを整理して優先順位を調整し、タスクの実行ループに入る
+
+簡単にいうとユーザーのしたいことからタスクを生成して、それを実行しその結果から再度タスクを生成して最終的にゴールにたどり着くまでそれを続ける
+
+#### AutoGen
+
+- Microsoft、ペンシルベニア州立大学、ワシントン大学が中心となり開発
+- AI エージェントツール
+- python 版と.NET 版がある
+- オープンソースソフトウェア
+
+会話エージェントと実行エージェントを複数組み合わせで汎用的なタスクの実行を実現する AI エージェントツール。
+組合せ方によりさまざまなタスクを実行できる。例えば複数のアシスタント同士で会話することで回答を生成したりすることが可能
+
+#### crewAI
+
+- Web 検索やデータ分析、マルチエージェントコラボレーションを活用して問題解決を行うエージェントツール
+- 複数のエージェントにゴールを設定してクルーとしてまとめて効果的にコラボレーションさせる
+
+crewAI の用語
+
+- エージェント: フレームワーク内で「役割（Role）」と「目標（Goal）」を持ち、自律的に動くユニット
+- タスク：エージェントに「こういう仕事をしてください」という具体的な割り当て
+- ツール：エージェント／タスクが使える「機能・道具」。データ読み込みや外部 API 連携など
+- プロセス：タスク／エージェント／クルーがどのように進行・協働するか
+- クルー：複数のエージェント＋タスクをまとめて「この目標を達成するためのチーム」を表したもの
+- メモリ：エージェント／クルーが「過去のやりとり・実行結果・学び・エンティティ（人・場所・概念など）」を記憶・参照できる仕組み
+- 計画：クルー実行前や実行中に「タスクをどう割り振るか」「どの順番で進めるか」「どんな手段で進むか」をエージェント（または専用のプランナー）が検討・設計する機能
+- トレーニング：エージェント（またはクルー全体）が実行経験・フィードバック・ヒューマンレビューなどをもとに、能力を改善・最適化していく機能
+
+ざっくりまとめると **「AI エージェントのチーム（クルー）をつくって、役割（エージェント）を与えて、仕事（タスク）を定義し、使える道具（ツール）を備え、実行の仕方（プロセス）を決め、記憶（メモリ）を活用し、事前に戦略を立て（計画）、運用・改善（トレーニング）していく」というワークフローを支えるフレームワーク**
+
+### 8.4 マルチエージェントアプローチ
+
+明確な定義は存在しないが、広義には 2 つの意味が含まれる
+
+- マルチステップなマルチエージェント：一連の処理の中で、複数のシステムプロンプトを使って、役割やステップごとに別々の AI エージェントで処理を行う、ワークフローの最適化を目的とした処理形態
+  - 「調査 → 要約 → 校正 → 出力」など、直列的にタスクをつなぐイメージ
+- マルチロールなマルチエージェント：異なるペルソナや役割を持たせた複数のエージェントに向かって協調動作させる形態
+  - 1 人の人間では難しい課題に対して、複数の視点（ロール）から議論・調整するイメージ
+
+マルチステップ型は各処理工程の最適化が主目的なのに対し、マルチロール型は多角的視点の融合が主目的となる。
+新製品の開発などで顧客から言語化が難しい潜在ニーズを洗い出す目的でマルチロール型が使用されることがある。
+
+## 第9章 LangGraphで作るAIエージェント実践入門
+
+### 9.1 LangGraphの概要
+
+LangGraphとは
+
+- LLMを活用した複雑なワークフローを開発するためのpythonのライブラリ
+- ワークフローをグラフ構造としてモデル化する
+- ここで言うモデルとはノードとエッジで構成されるグラフ構造のこと
+- モデル化することで視覚的に理解しやすい形で設計が可能になる
+- Stateというグラフの状態を保存できる
+- ノードで処理を実施して、その結果でstateを更新するような形で処理を進める
+
+### 9.3 ハンズオン：Q&Aアプリケーション
+
+LanggraphのQAアプリ
+
+質問した内容から回答者のロールを決めて、回答する。回答後に回答のクオリティを判断する。
+
+```py
+from langgraph.graph import END
+from langgraph.graph import StateGraph
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from typing import Any
+from langchain_openai import ChatOpenAI
+from langchain_core.runnables import ConfigurableField
+from pydantic import BaseModel, Field
+from typing import Annotated
+import operator
+from dotenv import load_dotenv
+load_dotenv()
+
+# ロールの定義
+ROLES = {
+    "1": {
+        "name": "一般知識エキスパート",
+        "description": "幅広い分野の一般的な質問に答える",
+        "details": "幅広い分野の一般的な質問に対して、正確で分かりやすい回答を提供してください。"
+    },
+    "2": {
+        "name": "生成AI製品エキスパート",
+        "description": "生成AIや関連製品、技術に関する専門的な質問に答える",
+        "details": "生成AIや関連製品、技術に関する専門的な質問に対して、最新の情報と深い洞察を提供してください。"
+    },
+    "3": {
+        "name": "カウンセラー",
+        "description": "個人的な悩みや心理的な問題に対してサポートを提供する",
+        "details": "個人的な悩みや心理的な問題に対して、共感的で支援的な回答を提供し、可能であれば適切なアドバイスも行ってください。"
+    }
+}
+
+# Stateの定義
+
+
+class State(BaseModel):
+
+    # 質問内容が格納される変数
+    query: str = Field(..., description="ユーザーからの質問")
+
+    # ロールが格納される変数
+    current_role: str = Field(
+        default="", description="選定された回答ロール"
+    )
+
+    # 生成された回答が入る。
+    # Annotatedというのが変数にメタデータを付けることができる機能で、この変数自体はlistとして扱う
+    # Langgraphの仕様で、operator.addを付けておくとlistに追加するように動いてくれる
+    messages: Annotated[list[str], operator.add] = Field(
+        default=[], description="回答履歴"
+    )
+
+    # 回答精度の判定結果が入る
+    current_judge: bool = Field(
+        default=False, description="品質チェックの結果"
+    )
+
+    # 回答精度の判定理由が入る
+    judgement_reason: str = Field(
+        default="", description="品質チェックの判定理由"
+    )
+
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
+# 後からmax_tokensの値を変更できるように、変更可能なフィールドを宣言
+llm = llm.configurable_fields(max_tokens=ConfigurableField(id='max_tokens'))
+
+
+def selection_node(state: State) -> dict[str, Any]:
+    """ロールを決める用のnode"""
+
+    query = state.query
+    role_options = "\n".join(
+        [f"{k}. {v['name']}: {v['description']}" for k, v in ROLES.items()])
+    prompt = ChatPromptTemplate.from_template(
+        """質問を分析し、最も適切な回答担当ロールを選択してください。
+
+選択肢:
+{role_options}
+
+回答は選択肢の番号（1、2、または3）のみを返してください。
+
+質問: {query}
+""".strip()
+    )
+    # 選択肢の番号のみを返すことを期待したいため、max_tokensの値を1に変更
+    chain = prompt | llm.with_config(
+        configurable=dict(max_tokens=1)) | StrOutputParser()
+    role_number = chain.invoke({"role_options": role_options, "query": query})
+
+    selected_role = ROLES[role_number.strip()]["name"]
+    return {"current_role": selected_role}
+
+
+def answering_node(state: State) -> dict[str, Any]:
+    """選択されたロールをもとに回答するノード"""
+
+    query = state.query
+    role = state.current_role
+    role_details = "\n".join(
+        [f"- {v['name']}: {v['details']}" for v in ROLES.values()])
+    prompt = ChatPromptTemplate.from_template(
+        """あなたは{role}として回答してください。以下の質問に対して、あなたの役割に基づいた適切な回答を提供してください。
+
+役割の詳細:
+{role_details}
+
+質問: {query}
+
+回答:""".strip()
+    )
+    chain = prompt | llm | StrOutputParser()
+    answer = chain.invoke(
+        {"role": role, "role_details": role_details, "query": query})
+    return {"messages": [answer]}
+
+
+class Judgement(BaseModel):
+    judge: bool = Field(default=False, description="判定結果")
+    reason: str = Field(default="", description="判定理由")
+
+
+def check_node(state: State) -> dict[str, Any]:
+    """回答の品質をチェックする用のノード"""
+
+    query = state.query
+    answer = state.messages[-1]
+    prompt = ChatPromptTemplate.from_template(
+        """以下の回答の品質をチェックし、問題がある場合は'False'、問題がない場合は'True'を回答してください。
+また、その判断理由も説明してください。
+
+ユーザーからの質問: {query}
+回答: {answer}
+""".strip()
+    )
+    chain = prompt | llm.with_structured_output(Judgement)
+    result: Judgement = chain.invoke({"query": query, "answer": answer})
+
+    return {
+        "current_judge": result.judge,
+        "judgement_reason": result.reason
+    }
+
+
+# グラフの作成
+workflow = StateGraph(State)
+
+# グラフにノードを追加
+workflow.add_node("selection", selection_node)
+workflow.add_node("answering", answering_node)
+workflow.add_node("check", check_node)
+
+# selectionノードから処理を開始
+workflow.set_entry_point("selection")
+# selectionノードからansweringノードへ
+workflow.add_edge("selection", "answering")
+# answeringノードからcheckノードへ
+workflow.add_edge("answering", "check")
+
+
+# checkノードから次のノードへの遷移に条件付きエッジを定義
+# state.current_judgeの値がTrueならENDノードへ、Falseならselectionノードへ
+workflow.add_conditional_edges(
+    "check",
+    lambda state: state.current_judge,
+    {True: END, False: "selection"}
+)
+
+# グラフのコンパイル
+compiled = workflow.compile()
+
+initial_state = State(query="生成AIについて教えてください")
+result = compiled.invoke(initial_state)
+
+print(result)
+```
