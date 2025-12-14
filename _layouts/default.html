@@ -17,6 +17,43 @@
 
     {%- include footer.html -%}
 
+    <!-- ページトップに戻るボタン -->
+    <button id="back-to-top" aria-label="ページの先頭に戻る">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M10 2L3 9h4v7h6V9h4l-7-7z"/>
+      </svg>
+    </button>
+
+    <script>
+      (function() {
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        // スクロール位置に応じてボタンの表示/非表示を切り替え
+        function toggleBackToTopButton() {
+          if (window.pageYOffset > 300) {
+            backToTopButton.classList.add('show');
+          } else {
+            backToTopButton.classList.remove('show');
+          }
+        }
+        
+        // ページトップにスムーズスクロール
+        function scrollToTop() {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+        
+        // イベントリスナーを設定
+        window.addEventListener('scroll', toggleBackToTopButton);
+        backToTopButton.addEventListener('click', scrollToTop);
+        
+        // 初期化時にボタンの状態を確認
+        toggleBackToTopButton();
+      })();
+    </script>
+
   </body>
 
 </html>
