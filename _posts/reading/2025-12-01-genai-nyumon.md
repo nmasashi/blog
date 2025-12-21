@@ -199,3 +199,78 @@ model.summary()
 
 この2次元の潜在空間に値をいれると画像生成ができる。しかし、クラスターがまばらでありクラスター間もすきまがある。
 このため、クラスター間の部分では複数画像が合わさった画像が生成されてしまっている。
+
+### 変分オートエンコーダへの拡張
+
+エンコーダから出た値をそのまま潜在空間に配置するのではなく、正規分布を使用しそれをもとにデコーダを学習させる。
+その際に、学習させるデータを選ぶ関数をサンプラーと呼ばれるみたい
+
+エンコーダのコード
+
+```python
+encoder = models.Sequential(name='encoder')
+encoder.add(layers.Input(shape=(32*32,), name='encoder_input'))
+encoder.add(layers.Reshape((32, 32, 1), name='reshape'))
+encoder.add(layers.Conv2D(32, (3, 3), strides=2, padding='same',
+                activation='relu', name='conv_filter1')) # (16, 16, 32)
+encoder.add(layers.Conv2D(64, (3, 3), strides=2, padding='same',
+                activation='relu', name='conv_filter2')) # (8, 8, 64)
+encoder.add(layers.Conv2D(128, (3, 3), strides=2, padding='same',
+                activation='relu', name='conv_filter3')) # (4, 4, 128)
+encoder.add(layers.Flatten(name='flatten'))
+encoder.add(layers.Dense(4, name='mean_and_log_var'))
+
+encoder.summary()
+```
+
+![image]({{site.baseurl}}/images/reading/genai_nyumon/vae_encoder.png)
+
+サンプラーのコード
+
+```python
+def get_samples(x): # x: encoder output
+    num_examples = tf.shape(x)[0]
+    means, log_vars = x[:, 0:2], x[:, 2:4]
+    std_samples = tf.random.normal(shape=(num_examples, 2))
+    samples = means + tf.exp(0.5 * log_vars) * std_samples
+    return samples
+
+sampler = models.Sequential(name='sampler')
+sampler.add(layers.Input(shape=(4,), name='sampler_input'))
+sampler.add(layers.Lambda(get_samples, name='sampled_embedding'))
+
+sampler.summary()
+```
+
+![image]({{site.baseurl}}/images/reading/genai_nyumon/vae_sampler.png)
+
+デコーダは同じ
+
+こんな感じで合体させる。これに誤差関数を平均二乗誤差をとるようなものを設定して学習をする。
+（この辺からよくわからんくなった。）
+
+```python
+model_inputs = encoder.inputs[0]
+model_outputs = layers.Concatenate(name='prediction_with_mean_log_var')(
+    [encoder(model_inputs), decoder(sampler(encoder(model_inputs)))])
+
+model = models.Model(inputs=model_inputs, outputs=model_outputs,
+                     name='Variational_AutoEncoder')
+model.summary()
+```
+
+![image]({{site.baseurl}}/images/reading/genai_nyumon/vae.png)
+
+結果はこんな感じ
+
+![image]({{site.baseurl}}/images/reading/genai_nyumon/vae_result01.png)
+
+変分オートエンコーダを使用する前はx軸が-40 ~ -程度だったが、今回は-4 ~ 4程度になっており、クラスターが均等に広がっていることがわかる。
+
+シグモイド関数を使用して0 ~ 1で表現するとこんな感じ
+
+![image]({{site.baseurl}}/images/reading/genai_nyumon/vae_result02.png)
+
+以前のものより判別できる画像（複数要素が入っていない）が多い
+
+![image]({{site.baseurl}}/images/reading/genai_nyumon/vae_result03.png)
