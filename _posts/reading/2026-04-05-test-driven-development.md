@@ -50,9 +50,9 @@ WyCash: ポートフォリオ管理システム
 jUnitを作るような話。jUnitを作るにもテスト駆動の考え方をつかってつるといいよ～てきなこと。
 ちょっと難しくて頭にはいらなかった。jUnitつくることはないと思うし、まぁいいかな。。。
 
-### 第Ⅲ部 テスト駆動開発のパターン
+## 第Ⅲ部 テスト駆動開発のパターン
 
-#### 三角測量
+### 三角測量
 
 プロダクトコードの仮実装をした際に、正しい一般化をする目的で使用する
 
@@ -68,3 +68,33 @@ private int plus(int augend, int addend){
    return 4;
 }
 ```
+
+### Pluggable Object
+
+`if`で振る舞いを切り替える代わりに、振る舞いごとにオブジェクトを作って差し替える（プラグみたいに挿し替える）パターン。
+同じ条件の`if`があちこちのメソッドに出てきたら使いどころ。
+
+例：図形エディタの選択ツール
+
+- 図形の上でクリック → ドラッグで図形を動かす
+- 何もないところでクリック → ドラッグで範囲選択
+
+素直に書くと`mouseDown`・`mouseMove`・`mouseUp`それぞれに`if (selected != null)`が出てきて重複する。
+
+```java
+public void mouseDown() {
+   selected = findFigure();
+   if (selected != null) {
+      mode = new SingleSelection(selected); // 図形を動かす担当
+   } else {
+      mode = new MultipleSelection();       // 範囲選択の担当
+   }
+}
+
+public void mouseMove() {
+   mode.mouseMove(); // どっちのモードかは気にしない
+}
+```
+
+`mouseDown`の時点でその後の挙動が決まる。判断を1回にまとめて、その結果をオブジェクトとして持ち回るイメージ。
+TDD的には、最初は`if`で愚直に通して、重複が見えてきたらこの形にリファクタリングする。
