@@ -50,9 +50,9 @@ WyCash: ポートフォリオ管理システム
 jUnitを作るような話。jUnitを作るにもテスト駆動の考え方をつかってつるといいよ～てきなこと。
 ちょっと難しくて頭にはいらなかった。jUnitつくることはないと思うし、まぁいいかな。。。
 
-## 第Ⅲ部 テスト駆動開発のパターン
+### 第Ⅲ部 テスト駆動開発のパターン
 
-### 三角測量
+#### 三角測量
 
 プロダクトコードの仮実装をした際に、正しい一般化をする目的で使用する
 
@@ -68,62 +68,3 @@ private int plus(int augend, int addend){
    return 4;
 }
 ```
-
-### Pluggable Object
-
-条件分岐（`if`）で振る舞いを切り替えている箇所を、オブジェクトの差し替えで表現するパターン。
-同じ条件分岐があちこちに重複して出てきたら使いどころ。
-
-本の例は図形エディタの選択ツール。図形の上でクリックしたかどうかで、マウス操作ごとの処理が変わる。
-
-```java
-// 条件分岐がメソッドごとに散らばっている
-Figure selected;
-
-public void mouseDown() {
-   selected = findFigure();
-   if (selected != null) {
-      select(selected);
-   }
-}
-
-public void mouseMove() {
-   if (selected != null) {
-      move(selected);
-   } else {
-      moveSelectionRectangle();
-   }
-}
-
-public void mouseUp() {
-   if (selected == null) {
-      selectAll();
-   }
-}
-```
-
-`selected != null` の判定が何度も出てくるので、「単一選択モード」と「複数選択モード」をオブジェクトにして差し替える。
-
-```java
-SelectionMode mode;
-
-public void mouseDown() {
-   selected = findFigure();
-   if (selected != null) {
-      mode = new SingleSelection(selected);
-   } else {
-      mode = new MultipleSelection();
-   }
-}
-
-public void mouseMove() {
-   mode.mouseMove();
-}
-
-public void mouseUp() {
-   mode.mouseUp();
-}
-```
-
-条件分岐はオブジェクトを選ぶ1か所だけになって、あとはポリモーフィズムに任せられる。
-TDD的には、まず`if`で愚直にテストを通して、重複が見えてきたらリファクタリングでこの形にもっていく流れ。
